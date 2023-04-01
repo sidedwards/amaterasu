@@ -1,12 +1,12 @@
 # Amaterasu 🔥
 
-Amaterasu is a secure file deletion utility that erases files from existence, ensuring that sensitive data is permanently destroyed.
+Amaterasu is a secure file and directory deletion utility that erases files and directories from existence, ensuring that sensitive data is permanently destroyed.
 
 ![itachi-uchiha](https://user-images.githubusercontent.com/11489608/229286023-491486c1-2ec4-435c-9ee7-c3eed77313b5.jpg)
 
 ## Features
 
-- Securely delete files by overwriting them with random data
+- Securely delete files and directories by overwriting them with random data
 - Configurable number of overwrite passes for increased security
 - Cross-platform support (Windows, macOS, Linux)
 - Easy to use command-line interface
@@ -39,11 +39,11 @@ Amaterasu is a secure file deletion utility that erases files from existence, en
 
 ### General usage:
 
-`./amaterasu [file] [options]`
+`./amaterasu [file|directory] [options]`
 
 On Windows:
 
-`.\amaterasu.exe [file] [options]`
+`.\amaterasu.exe [file|directory] [options]`
 
 
 ### Options:
