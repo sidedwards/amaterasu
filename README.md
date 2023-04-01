@@ -6,7 +6,8 @@ Amaterasu is a secure file and directory deletion utility that erases files and 
 
 ## Features
 
-- Securely delete files and directories by overwriting them with random data
+- Securely delete files by overwriting them with random data
+- Support for secure deletion of **files of any size**
 - Configurable number of overwrite passes for increased security
 - Cross-platform support (Windows, macOS, Linux)
 - Easy to use command-line interface
