@@ -18,14 +18,26 @@ async function secureDelete(filepath: string, passes: number): Promise<void> {
 
     if (fileInfo.isFile) {
       const fileSize = fileInfo.size;
+      const chunkSize = 65536;
 
       for (let pass = 1; pass <= passes; pass++) {
         console.log(`Incinerating 🔥🔥'${filepath}'🔥🔥 (pass ${pass}/${passes})...`);
 
-        const randomData = new Uint8Array(fileSize);
-        crypto.getRandomValues(randomData);
+        let offset = 0;
 
-        await Deno.writeFile(filepath, randomData);
+        while (offset < fileSize) {
+          const remainingSize = fileSize - offset;
+          const currentChunkSize = Math.min(chunkSize, remainingSize);
+          const randomData = new Uint8Array(currentChunkSize);
+          crypto.getRandomValues(randomData);
+
+          const file = await Deno.open(filepath, { write: true, create: false, truncate: false });
+          await Deno.seek(file.rid, offset, Deno.SeekMode.Start);
+          await Deno.write(file.rid, randomData);
+          await Deno.close(file.rid);
+
+          offset += currentChunkSize;
+        }
       }
 
       await Deno.remove(filepath);
