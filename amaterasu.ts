@@ -13,11 +13,6 @@ async function fileExists(filepath: string): Promise<boolean> {
 }
 
 async function secureDelete(filepath: string, passes: number): Promise<void> {
-  if (!(await fileExists(filepath))) {
-    console.error(`Error: File '${filepath}' does not exist.`);
-    return;
-  }
-
   try {
     const fileInfo = await Deno.stat(filepath);
 
@@ -25,7 +20,7 @@ async function secureDelete(filepath: string, passes: number): Promise<void> {
       const fileSize = fileInfo.size;
 
       for (let pass = 1; pass <= passes; pass++) {
-        console.log(`Consuming 🔥🔥'${filepath}'🔥🔥 (pass ${pass}/${passes})...`);
+        console.log(`Incinerating 🔥🔥'${filepath}'🔥🔥 (pass ${pass}/${passes})...`);
 
         const randomData = new Uint8Array(fileSize);
         crypto.getRandomValues(randomData);
@@ -35,8 +30,18 @@ async function secureDelete(filepath: string, passes: number): Promise<void> {
 
       await Deno.remove(filepath);
       console.log(`Vanished '${filepath}' from existence.`);
+    } else if (fileInfo.isDirectory) {
+      const entries = Deno.readDir(filepath);
+
+      for await (const entry of entries) {
+        const entryPath = `${filepath}/${entry.name}`;
+        await secureDelete(entryPath, passes);
+      }
+
+      await Deno.remove(filepath);
+      console.log(`Vanished directory '${filepath}' from existence.`);
     } else {
-      console.error(`Error: '${filepath}' is not a file.`);
+      console.error(`Error: '${filepath}' is neither a file nor a directory.`);
     }
   } catch (err) {
     console.error(`Error: Failed to secure delete '${filepath}':`, err);
@@ -75,14 +80,14 @@ const { filepath, passes, help } = parseArgs(args);
 if (!filepath || help) {
   console.log(`
 Usage:
-  amaterasu [file] [options]
+  amaterasu [file|directory] [options]
 
 Options:
   --passes, -p [number]  Number of overwrite passes (default: 3)
   --help                 Show this help message
 
 Description:
-  Amaterasu securely deletes a specified file by overwriting
+  Amaterasu securely deletes a specified file or directory by overwriting
   it with random data multiple times before removing it.
   `);
 } else {
